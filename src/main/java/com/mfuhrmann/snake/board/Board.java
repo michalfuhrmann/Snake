@@ -85,10 +85,13 @@ public class Board {
     }
 
     private void keyPressed(Direction direction) {
+
         SnakeCell head = snake.getHead();
         Point oldHead = head.getPoint();
         boardCells[oldHead.getY()][oldHead.getX()] = new EmptyCell(oldHead);
+
         checkCollision();
+
         performAction(direction);
         Point newHead = head.getPoint();
         boardCells[newHead.getY()][newHead.getX()] = snake.getHead();

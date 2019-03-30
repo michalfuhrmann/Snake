@@ -7,9 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Snake {
+    private boolean growing = false;
     private final SnakeCell head;
     private final int size;
-    private final List <SnakeCell> body = new ArrayList<>();
+    private final List<SnakeCell> body = new ArrayList<>();
 
     public Snake(SnakeCell head, int size) {
         this.head = head;
@@ -17,29 +18,63 @@ public class Snake {
     }
 
     public void moveUp() {
-        Point point = head.getPoint();
-        if (point.getY() == 0) {
-            point = new Point(point.getX(), point.getY() + size);
+        Point oldHead = head.getPoint();
+
+        if (oldHead.getY() == 0) {
+            oldHead = new Point(oldHead.getX(), oldHead.getY() + size);
         }
-        head.setPoint(new Point(point.getX(), (point.getY() - 1)%size));
+        head.setPoint(new Point(oldHead.getX(), (oldHead.getY() - 1) % size));
+
+        if (growing) {
+            appendBody(oldHead);
+        }
+        if (!growing) {
+            moveBody(oldHead);
+        }
+
     }
 
+
     public void moveDown() {
-        Point point = head.getPoint();
-        head.setPoint(new Point(point.getX(),(point.getY()+1)%size));
+        Point oldHead = head.getPoint();
+        head.setPoint(new Point(oldHead.getX(), (oldHead.getY() + 1) % size));
+
+
+        if (growing) {
+            appendBody(oldHead);
+        }
+        if (!growing) {
+            moveBody(oldHead);
+        }
+
     }
 
     public void moveLeft() {
-        Point point = head.getPoint();
-        if (point.getX() == 0) {
-            point = new Point(point.getX()+size, point.getY());
+        Point oldHead = head.getPoint();
+        if (oldHead.getX() == 0) {
+            oldHead = new Point(oldHead.getX() + size, oldHead.getY());
         }
-        head.setPoint(new Point((point.getX()-1)%size,point.getY()));
+        head.setPoint(new Point((oldHead.getX() - 1) % size, oldHead.getY()));
+
+        if (growing) {
+            appendBody(oldHead);
+        }
+        if (!growing) {
+            moveBody(oldHead);
+        }
     }
 
     public void moveRight() {
-        Point point = head.getPoint();
-        head.setPoint(new Point((point.getX()+1)%size,point.getY()));
+        Point oldHead = head.getPoint();
+        head.setPoint(new Point((oldHead.getX() + 1) % size, oldHead.getY()));
+
+        if (growing) {
+            appendBody(oldHead);
+        }
+        if (!growing) {
+            moveBody(oldHead);
+        }
+
     }
 
     public SnakeCell getHead() {
@@ -47,7 +82,9 @@ public class Snake {
     }
 
     public void grow() {
+        growing = true;
         SnakeCell tail = getTail();
+
 
     }
 
@@ -57,5 +94,28 @@ public class Snake {
         } else {
             return body.get(body.size() - 1);
         }
+    }
+
+
+    private void moveBody(Point oldHead) {
+        if (body.isEmpty()) {
+            return;
+        }
+
+        for (int i = body.size(); i > 0; i--) {
+            Point previousBodyPoint = body.get(i + 1).getPoint();
+            body.get(i).setPoint(previousBodyPoint);
+
+        }
+        SnakeCell firstBody = body.get(0);
+        firstBody.setPoint(oldHead);
+
+    }
+
+
+    private void appendBody(Point oldHead) {
+
+        body.add(new SnakeCell(oldHead));
+
     }
 }
