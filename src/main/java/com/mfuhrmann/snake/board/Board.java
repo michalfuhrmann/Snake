@@ -1,5 +1,6 @@
 package com.mfuhrmann.snake.board;
 
+import com.mfuhrmann.snake.Direction;
 import com.mfuhrmann.snake.Snake;
 
 import java.util.Arrays;
@@ -67,33 +68,51 @@ public class Board {
     }
 
     public void keyUp() {
-        keyPressed(()->snake.moveUp());
+        keyPressed(Direction.UP);
     }
 
     public void keyDown() {
-        keyPressed(()->snake.moveDown());
+        keyPressed(Direction.DOWN);
     }
 
     public void keyLeft() {
-        keyPressed(()->snake.moveLeft());
+        keyPressed(Direction.LEFT);
     }
 
     public void keyRight() {
-        keyPressed(()->snake.moveRight());
+        keyPressed(Direction.RIGHT);
 
     }
 
-    private void keyPressed(Runnable r) {
+    private void keyPressed(Direction direction) {
         SnakeCell head = snake.getHead();
         Point oldHead = head.getPoint();
         boardCells[oldHead.getY()][oldHead.getX()] = new EmptyCell(oldHead);
-        r.run();
-        checkColision();
+        checkCollision();
+        performAction(direction);
         Point newHead = head.getPoint();
         boardCells[newHead.getY()][newHead.getX()] = snake.getHead();
     }
 
-    private void checkColision() {
+    private void performAction(Direction direction) {
+        switch (direction) {
+
+            case UP:
+                snake.moveUp();
+                break;
+            case DOWN:
+                snake.moveDown();
+                break;
+            case LEFT:
+                snake.moveLeft();
+                break;
+            case RIGHT:
+                snake.moveRight();
+                break;
+        }
+    }
+
+    private void checkCollision() {
         BoardCell checkCell = boardCells[snake.getHead().getPoint().getY()][snake.getHead().getPoint().getX()];
         if (checkCell instanceof FruitCell) {
             snake.grow();
